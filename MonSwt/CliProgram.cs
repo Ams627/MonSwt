@@ -6,26 +6,28 @@ namespace MonSwtCli;
 class CliProgram
 {
     const string PipeName = "MonSwt.Pipe";
-    const string ExeName = "MonSwt.exe";
     private static void Main(string[] args)
     {
         try
         {
-            Console.WriteLine("Hello");
             EnsureExeRunning();
-            using (var client = new NamedPipeClientStream(".", "MyMonitorPipe", PipeDirection.InOut))
+            using (var client = new NamedPipeClientStream(".", "MonSwt.Pipe", PipeDirection.InOut))
             {
                 try
                 {
+                    var command = args.Length > 0 ? args[0] : "BasicPoll";
+
                     // Wait up to a second for connection:
                     client.Connect(1000);
 
-                    using (var writer = new StreamWriter(client) { AutoFlush = true })
                     using (var reader = new StreamReader(client))
+                    using (var writer = new StreamWriter(client) { AutoFlush = true })
                     {
-                        writer.WriteLine("basic poll");
-                        string response = reader.ReadLine();
-                        Console.WriteLine(response);
+                        {
+                            writer.WriteLine(command);
+                            string response = reader.ReadLine();
+                            Console.WriteLine(response);
+                        }
                     }
                 }
                 catch (TimeoutException)
@@ -33,7 +35,6 @@ class CliProgram
                     Console.WriteLine("Could not connect to GUI process.");
                 }
             }
-
         }
         catch (Exception ex)
         {
@@ -45,23 +46,25 @@ class CliProgram
 
     private static void EnsureExeRunning()
     {
-        Console.WriteLine("Ensure");
-        var runningP = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(ExeName));
-        bool isRunning = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(ExeName)).Any();
+        string pathOfThisProcess = Process.GetCurrentProcess().MainModule.FileName;
+        string exeName = Path.ChangeExtension(pathOfThisProcess, ".exe");
+
+        bool isRunning = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exeName)).Any();
+        Console.WriteLine(isRunning);
         if (!isRunning)
         {
             try
             {
-                Console.WriteLine($"Starting process...");
-                var result = Process.Start(ExeName);
-                Console.WriteLine($"Process should be running...{result.Id}");
+                Console.WriteLine($"Starting monswt hotkey monitoring process...");
+                var result = Process.Start(exeName);
+                Console.WriteLine($"Process is running...{result.Id}");
 
                 // Give the GUI a second to initialise the pipe:
                 Thread.Sleep(1000);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to start GUI: {ex.Message}");
+                Console.WriteLine($"Failed to start GUI: {ex}");
                 Environment.Exit(1);
             }
 

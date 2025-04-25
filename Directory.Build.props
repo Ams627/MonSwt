@@ -3,5 +3,11 @@
     <UseArtifactsOutput>true</UseArtifactsOutput >
     <ImplicitUsings>Enable</ImplicitUsings>
     <PublishSingleFile>True</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <DebugType>Embedded</DebugType>
+    <LangVersion>Latest</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 </Project>

@@ -1,22 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <DebugType>Embedded</DebugType>
-    <LangVersion>Latest</LangVersion>
-    <BinDir>c:\bin</BinDir>
-	<ExeOutputName>monswt.exe</ExeOutputName>
-	  <SelfContained>false</SelfContained>
-	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-	  <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
-	  <PublishTrimmed>true</PublishTrimmed>
+	  <OutputType>Exe</OutputType>
+	  <DestinationName>MonSwt.exe</DestinationName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="4.2.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
-  </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="echo copying $(TargetPath) to $(BinDir)\$(ExeOutputName) &amp;&amp; copy $(TargetPath) $(BinDir)\$(ExeOutputName)" />
-  </Target>
+	<ItemGroup>
+		<PackageReference Include="Serilog" Version="4.2.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+		<PackageReference Include="System.Threading.AccessControl" Version="9.0.4" />
+	</ItemGroup>
 </Project>

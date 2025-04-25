@@ -1,0 +1,18 @@
+<Project>
+  <Target Name="CopyPublishedExeToBin" AfterTargets="Publish">
+    <!-- Only run if DestinationName is set -->
+    <PropertyGroup>
+      <ResolvedPublishDir>$(PublishDir.TrimEnd('\'))\</ResolvedPublishDir>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(DestinationName)' != ''">
+      <PublishedExe Include="$(ResolvedPublishDir)$(AssemblyName).exe" />
+    </ItemGroup>
+
+    <Copy
+      SourceFiles="@(PublishedExe)"
+      DestinationFiles="@(PublishedExe->'C:\bin\$(DestinationName)')"
+      SkipUnchangedFiles="true"
+      Condition="Exists('%(PublishedExe.Identity)')" />
+  </Target>
+</Project>
