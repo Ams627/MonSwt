@@ -61,13 +61,10 @@ class DDCController
             // 0x60 is the VCP code for Input Source
             SetVCPFeature(mon.hPhysicalMonitor, 0x60, inputSource);
         }
-
-        Console.WriteLine("Input source set to: " + inputSource);
     }
 
     internal static void SwapSides()
     {
-
         // E9(00 01 02 21 22 24 27 28 29 2A )
         // switch sides E5 0xF001
         foreach (var mon in GetMonitors())

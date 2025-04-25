@@ -31,7 +31,7 @@ class ExeProgram
 
             // Register hotkey
             NativeWindows.RegisterHotKey(IntPtr.Zero, NativeWindows.HOTKEY_ID, 0, NativeWindows.VK_F16);
-            Console.WriteLine("Hotkey ALT+F10 registered.");
+            Console.WriteLine("Hotkey F16 registered.");
 
             IntPtr[] handles = { eventToWaitFor.SafeWaitHandle.DangerousGetHandle() };
 
@@ -48,7 +48,6 @@ class ExeProgram
 
                 if (result == WAIT_OBJECT_0)
                 {
-                    Console.WriteLine("Event was signaled! Exiting loop.");
                     break;
                 }
                 else if (result == WAIT_OBJECT_0 + 1)
@@ -70,7 +69,7 @@ class ExeProgram
                 }
                 else
                 {
-                    Console.WriteLine("Timeout or unknown result: " + result);
+
                 }
             }
             Console.WriteLine("exiting");
@@ -92,14 +91,13 @@ class ExeProgram
 
     private static void Pipe()
     {
+        var pid = Process.GetCurrentProcess().Id;
         //   Log.Information("Starting Pipe");
         while (true)
         {
             using (var server = new NamedPipeServerStream(PipeName, PipeDirection.InOut))
             {
                 server.WaitForConnection();
-                Console.WriteLine("Connection");
-
                 using (var reader = new StreamReader(server))
                 using (var writer = new StreamWriter(server) { AutoFlush = true })
                 {
@@ -107,23 +105,24 @@ class ExeProgram
                     if (line == "BasicPoll")
                     {
                         var uptime = (int)(DateTime.Now - _startTime).TotalSeconds;
-                        var pid = Process.GetCurrentProcess().Id;
                         writer.WriteLine($"MonSwt has been running for {uptime} seconds with PID {pid}");
                     }
                     else if (line is "exit" or "kill")
                     {
                         var uptime = (int)(DateTime.Now - _startTime).TotalSeconds;
-                        var pid = Process.GetCurrentProcess().Id;
+
                         writer.WriteLine($"Monswt PID {pid} exiting");
                         eventToWaitFor.Set();
                     }
                     else if (line == "hdmi")
                     {
                         ddcCode = 0x11;
+                        writer.WriteLine($"Monswt PID {pid} will switch to HDMI");
                     }
                     else if (line == "thunder")
                     {
                         ddcCode = 0x1e;
+                        writer.WriteLine($"Monswt PID {pid} will switch to thunderbolt");
                     }
                     else
                     {
