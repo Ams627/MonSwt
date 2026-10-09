@@ -5,7 +5,7 @@
     <PublishSingleFile>True</PublishSingleFile>
     <SelfContained>false</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <DebugType>Embedded</DebugType>
     <LangVersion>Latest</LangVersion>
     <TargetFramework>net8.0</TargetFramework>

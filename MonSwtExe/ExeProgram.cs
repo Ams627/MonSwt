@@ -76,7 +76,7 @@ class ExeProgram
         }
         catch (Exception ex)
         {
-            var fullname = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var fullname = Environment.ProcessPath;
             var progname = Path.GetFileNameWithoutExtension(fullname);
             Console.Error.WriteLine($"{progname} Error: {ex.Message}");
         }

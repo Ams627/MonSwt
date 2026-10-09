@@ -38,7 +38,7 @@ class CliProgram
         }
         catch (Exception ex)
         {
-            var fullname = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var fullname = Environment.ProcessPath;
             var progname = Path.GetFileNameWithoutExtension(fullname);
             Console.Error.WriteLine($"{progname} Error: {ex.Message}");
         }
@@ -46,17 +46,24 @@ class CliProgram
 
     private static void EnsureExeRunning()
     {
-        string pathOfThisProcess = Process.GetCurrentProcess().MainModule.FileName;
-        string exeName = Path.ChangeExtension(pathOfThisProcess, ".exe");
+        string pathOfThisProcess = Environment.ProcessPath;
+        string exePath = Path.ChangeExtension(pathOfThisProcess, ".exe");
 
-        bool isRunning = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exeName)).Any();
+        bool isRunning = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exePath)).Length > 0;
         Console.WriteLine(isRunning);
         if (!isRunning)
         {
             try
             {
                 Console.WriteLine($"Starting monswt hotkey monitoring process...");
-                var result = Process.Start(exeName);
+                var result = Process.Start(
+                    new ProcessStartInfo
+                    {
+                        FileName = exePath,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                    );
                 Console.WriteLine($"Process is running...{result.Id}");
 
                 // Give the GUI a second to initialise the pipe:
